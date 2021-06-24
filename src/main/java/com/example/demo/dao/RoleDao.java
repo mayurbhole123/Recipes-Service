@@ -1,20 +1,25 @@
 package com.example.demo.dao;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.RoleModel;
+import com.example.demo.repo.RoleRepo;
 
-/**
- * Interface having abstract method which needs to implement in dao
- * implementation classes.
- *
- */
-@Service
-public interface RoleDao {
-	public Optional<RoleModel> findByRoleId(int roleId);
+@Repository
+public class RoleDao {
 
-	public List<RoleModel> findAllRoles();
+	@Autowired
+	private RoleRepo roleRepo;
+
+	public void saveAll(List<RoleModel> entities) {
+		roleRepo.saveAll(entities);
+	}
+
+	public List<RoleModel> findRoles(Collection<Integer> roleIds) {
+		return roleRepo.findRoles(roleIds);
+	}
 }

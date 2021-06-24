@@ -13,12 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dao.CustomerDao;
+import com.example.demo.dao.RoleDao;
+import com.example.demo.dao.UserRolesDao;
 import com.example.demo.model.CustomerModel;
 import com.example.demo.model.RoleModel;
 import com.example.demo.model.UserRolesModel;
-import com.example.demo.repo.CustomerRepo;
-import com.example.demo.repo.RoleRepo;
-import com.example.demo.repo.UserRolesRepo;
 
 /**
  * User service class to validate user is available or valid or not.
@@ -27,19 +27,19 @@ import com.example.demo.repo.UserRolesRepo;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 	@Autowired
-	private CustomerRepo repo;
-	
+	private CustomerDao customerDao;
+
 	@Autowired
-	UserRolesRepo userRolesRepo;
-	
+	private UserRolesDao userRolesDao;
+
 	@Autowired
-	RoleRepo roleRepo;
-	
+	private RoleDao roleDao;
+
 	@SuppressWarnings("unchecked")
-  @Override
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Optional<CustomerModel> user = repo.findByUserName(username);
+		Optional<CustomerModel> user = customerDao.findByUserName(username);
 		if (!user.isPresent()) {
 			throw new UsernameNotFoundException("User not found with username: " + username);
 		}
@@ -48,15 +48,15 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-  private Set getAuthority(CustomerModel customer) {
-    Set authorities = new HashSet<>();
-    List<UserRolesModel> userRoles = userRolesRepo.getUserRoles(customer.getUserId());
-    List<RoleModel> roles = roleRepo
-        .findRoles(userRoles.stream().map(UserRolesModel::getRoleId).collect(Collectors.toList()));
+	private Set getAuthority(CustomerModel customer) {
+		Set authorities = new HashSet<>();
+		List<UserRolesModel> userRoles = userRolesDao.getUserRoles(customer.getUserId());
+		List<RoleModel> roles = roleDao
+				.findRoles(userRoles.stream().map(UserRolesModel::getRoleId).collect(Collectors.toList()));
 
-    for (RoleModel role : roles) {
-      authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleCode()));
-    }
-    return authorities;
-  }
+		for (RoleModel role : roles) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleCode()));
+		}
+		return authorities;
+	}
 }

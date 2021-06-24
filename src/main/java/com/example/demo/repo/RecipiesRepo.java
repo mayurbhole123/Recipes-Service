@@ -3,9 +3,9 @@ package com.example.demo.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.model.ReceipeIngredientsModel;
+import com.example.demo.model.RecepiesModel;
 
 @Repository
-public interface IngredientsRepo extends JpaRepository<ReceipeIngredientsModel, Integer>{
+public interface RecipiesRepo extends JpaRepository<RecepiesModel, Integer>{
 
 }

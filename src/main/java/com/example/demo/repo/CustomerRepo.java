@@ -11,8 +11,10 @@ import com.example.demo.model.CustomerModel;
 
 @Repository
 public interface CustomerRepo extends JpaRepository<CustomerModel, Integer>{
+
+	@Query("from CustomerModel c where c.userName = ?1")
 	public Optional<CustomerModel> findByUserName(String userName);
-	
+
 	@Query("from CustomerModel c join c.userRoles r where r.userId = c.userId")
-  List<CustomerModel> findAllCustomers();
+	List<CustomerModel> findAllCustomers();
 }
